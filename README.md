@@ -17,3 +17,7 @@ To run this script, run `deno run --allow-net --allow-read --allow-write new.ts 
 This script will run the solution for the current day. It will run both parts by default (or specify a or b after the command), and print the results to the console.
 
 To run this script, run `deno run --allow-read --allow-run run.ts <day> <part> <year>` from the root of the repo. Or, compile it to a binary with `deno compile --allow-read --allow-run run.ts` and run the executable from the root of the repo.
+
+## License
+
+[MIT](LICENSE)
