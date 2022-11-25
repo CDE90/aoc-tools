@@ -1,6 +1,6 @@
 # My Advent of Code Things
 
-This repo contains my AoC solutions, and also my scripts to automatically download the input for each day & initialise basic ts files for parts 1 & 2.
+This repo contains my [AoC](https://adventofcode.com/) solutions, and also my scripts to automatically download the input for each day & initialise basic ts files for parts 1 & 2.
 
 To use the scripts, you'll need to have [Deno](https://deno.land/) installed.
 
