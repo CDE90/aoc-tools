@@ -1,22 +1,43 @@
 # My Advent of Code Things
 
-This repo contains my [AoC](https://adventofcode.com/) solutions, and also my scripts to automatically download the input for each day & initialise basic ts files for parts 1 & 2.
-
-To use the scripts, you'll need to have [Deno](https://deno.land/) installed.
+This repo contains my [AoC](https://adventofcode.com/) tools to automatically download the input, create boilerplate code for rust, typescript or python, and run the code. To use it, you need to have [rust](https://www.rust-lang.org/tools/install) installed.
 
 ## Scripts
 
-### `new.ts`
+To automatically download the input, you will need to create a `.env` file in the root of the repo with the following content:
 
-This script will create a new folder for the current day, and create a `a.ts` and `b.ts` file in it, with the very basic boilerplate code for each part. It will also download the input for the day, and save it to a file called `input.txt`.
+```bash
+AOC_SESSION=""
+```
 
-To run this script, run `deno run --allow-net --allow-read --allow-write new.ts <day> <year>` from the root of the repo. Or, compile it to a binary with `deno compile --allow-net --allow-read --allow-write new.ts` and run the executable from the root of the repo.
+You can get the session cookie from your browser. In Chrome, you can do this by visiting the [Advent of Code Website](https://adventofcode.com/) opening the developer tools, going to the application tab, and then copying the value of the `session` cookie.
 
-### `run.ts`
+### New
 
-This script will run the solution for the current day. It will run both parts by default (or specify a or b after the command), and print the results to the console.
+Use this to create a new solution for a given day. This also downloads your personal input if you have `AOC_SESSION` set. For example, to create a new typescript solution for day 1, run `cargo run -- new -d 1 -l ts`. The possible arguments are listed below.
 
-To run this script, run `deno run --allow-read --allow-run run.ts <day> <part> <year>` from the root of the repo. Or, compile it to a binary with `deno compile --allow-read --allow-run run.ts` and run the executable from the root of the repo.
+**Usage**:
+
+```bash
+cargo run -- new [OPTIONS] --day <DAY> --lang <LANG>
+```
+
+### Run
+
+Use this to run a solution for a given day. For example, to run the typescript solution for day 1, run `cargo run -- run -d 1 -l ts`. The possible arguments are listed below.
+
+**Usage**:
+
+```bash
+cargo run -- run [OPTIONS] --day <DAY> --lang <LANG>
+```
+
+| Argument    | Type      | Description                                                  |
+|------------ |---------- |------------------------------------------------------------- |
+| -d, --day   | `<DAY>`   | Day to create/run                                            |
+| -y, --year  | `<YEAR>`  | Year to create/run (Optional: defaults to most recent AOC)    |
+| -l, --lang  | `<LANG>`  | Language to use [default: ts] [possible values: rs, ts, py]  |
+| -h, --help  |           | Print help information                                       |
 
 ## License
 
