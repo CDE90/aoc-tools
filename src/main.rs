@@ -98,7 +98,7 @@ fn main() {
                     println!("Created {}", path);
                     let cargo_toml_path = format!("{}/Cargo.toml", year);
                     if !std::path::Path::new(&cargo_toml_path).exists() {
-                        let cargo_toml = std::fs::read_to_string("templates/Cargo.toml")
+                        let cargo_toml = std::fs::read_to_string("templates/template.Cargo.toml")
                             .unwrap()
                             .replace("{year}", &year);
                         std::fs::write(&cargo_toml_path, cargo_toml).unwrap();
