@@ -1,4 +1,4 @@
-# Path: {year}/{day}/solution.py
+# Path: {day}/solution.py
 
 
 def part1(input: str) -> int:

@@ -1,4 +1,4 @@
-// Path: {year}/{day}/solution.ts
+// Path: {day}/solution.ts
 
 export function part1(input: string): number {
     return 0;

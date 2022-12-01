@@ -44,10 +44,6 @@ enum Commands {
         #[arg(short, long, value_parser = valid_day)]
         day: u8,
 
-        /// Year to run
-        #[arg(short, long, value_parser = valid_year)]
-        year: Option<u16>,
-
         /// Language to use
         #[arg(short, long, default_value_t=Language::TypeScript, default_missing_value="ts", value_enum)]
         lang: Language,
@@ -57,14 +53,23 @@ enum Commands {
 fn main() {
     let args = Aoc::parse();
 
+    let py_template =
+        String::from_utf8_lossy(include_bytes!("../templates/template.py")).to_string();
+    let rs_template =
+        String::from_utf8_lossy(include_bytes!("../templates/template.rs")).to_string();
+    let ts_template =
+        String::from_utf8_lossy(include_bytes!("../templates/template.ts")).to_string();
+    let cargo_template =
+        String::from_utf8_lossy(include_bytes!("../templates/template.Cargo.toml")).to_string();
+
     match args.command {
         Commands::New { day, year, lang } => {
-            let year = year.unwrap_or_else(|| chrono::Local::now().year() as u16);
+            let year = year
+                .unwrap_or_else(|| chrono::Local::now().year() as u16)
+                .to_string();
             let day = day.to_string();
-            let year = year.to_string();
 
-            std::fs::create_dir_all(&year).unwrap();
-            std::fs::create_dir_all(&format!("{}/{}", year, day)).unwrap();
+            std::fs::create_dir_all(&format!("{}", day)).unwrap();
 
             let aoc_session = dotenv::var("AOC_SESSION");
             match aoc_session {
@@ -80,7 +85,7 @@ fn main() {
                         .text()
                         .unwrap();
 
-                    std::fs::write(format!("{}/{}/input.txt", year, day), input.trim()).unwrap();
+                    std::fs::write(format!("{}/input.txt", day), input.trim()).unwrap();
                 }
                 Err(e) => {
                     println!("AOC_SESSION not found in .env file: {}", e);
@@ -89,18 +94,13 @@ fn main() {
 
             match lang {
                 Language::Rust => {
-                    let path = format!("{}/{}/solution.rs", year, day);
-                    let template = std::fs::read_to_string("templates/template.rs")
-                        .unwrap()
-                        .replace("{year}", &year)
-                        .replace("{day}", &day);
+                    let path = format!("{}/solution.rs", day);
+                    let template = rs_template.replace("{day}", &day);
                     std::fs::write(&path, template).unwrap();
                     println!("Created {}", path);
-                    let cargo_toml_path = format!("{}/Cargo.toml", year);
+                    let cargo_toml_path = "Cargo.toml";
                     if !std::path::Path::new(&cargo_toml_path).exists() {
-                        let cargo_toml = std::fs::read_to_string("templates/template.Cargo.toml")
-                            .unwrap()
-                            .replace("{year}", &year);
+                        let cargo_toml = cargo_template.replace("{year}", &year);
                         std::fs::write(&cargo_toml_path, cargo_toml).unwrap();
                         println!("Created {}", cargo_toml_path);
                     }
@@ -113,33 +113,25 @@ fn main() {
                     println!("Added {} to {}", path, cargo_toml_path);
                 }
                 Language::TypeScript => {
-                    let path = format!("{}/{}/solution.ts", year, day);
-                    let template = std::fs::read_to_string("templates/template.ts")
-                        .unwrap()
-                        .replace("{year}", &year)
-                        .replace("{day}", &day);
+                    let path = format!("{}/solution.ts", day);
+                    let template = ts_template.replace("{day}", &day);
                     std::fs::write(&path, template).unwrap();
                     println!("Created {}", path);
                 }
                 Language::Python => {
-                    let path = format!("{}/{}/solution.py", year, day);
-                    let template = std::fs::read_to_string("templates/template.py")
-                        .unwrap()
-                        .replace("{year}", &year)
-                        .replace("{day}", &day);
+                    let path = format!("{}/solution.py", day);
+                    let template = py_template.replace("{day}", &day);
                     std::fs::write(&path, template).unwrap();
                     println!("Created {}", path);
                 }
             }
         }
-        Commands::Run { day, year, lang } => {
-            let year = year.unwrap_or_else(|| chrono::Local::now().year() as u16);
+        Commands::Run { day, lang } => {
             let day = day.to_string();
-            let year = year.to_string();
 
             match lang {
                 Language::Rust => {
-                    let path = format!("{}/{}/solution.rs", year, day);
+                    let path = format!("{}/solution.rs", day);
                     if !std::path::Path::new(&path).exists() {
                         println!("{} does not exist", path);
                         return;
@@ -148,14 +140,13 @@ fn main() {
                         .arg("run")
                         .arg("--bin")
                         .arg(format!("aoc-{}", day))
-                        .current_dir(&year)
                         .output()
                         .unwrap()
                         .stdout;
                     println!("{}:\n{}", path, String::from_utf8(output).unwrap().trim());
                 }
                 Language::TypeScript => {
-                    let path = format!("{}/{}/solution.ts", year, day);
+                    let path = format!("{}/solution.ts", day);
                     if !std::path::Path::new(&path).exists() {
                         println!("{} does not exist", path);
                         return;
@@ -164,21 +155,19 @@ fn main() {
                         .arg("run")
                         .arg("-A")
                         .arg(format!("./{}/solution.ts", day))
-                        .current_dir(&year)
                         .output()
                         .unwrap()
                         .stdout;
                     println!("{}:\n{}", path, String::from_utf8(output).unwrap().trim());
                 }
                 Language::Python => {
-                    let path = format!("{}/{}/solution.py", year, day);
+                    let path = format!("{}/solution.py", day);
                     if !std::path::Path::new(&path).exists() {
                         println!("{} does not exist", path);
                         return;
                     }
                     let output = Command::new("python")
                         .arg(format!("./{}/solution.py", day))
-                        .current_dir(&year)
                         .output()
                         .unwrap()
                         .stdout;

@@ -1,4 +1,4 @@
-// Path: {year}/{day}/solution.rs
+// Path: {day}/solution.rs
 
 use std::{fs::File, io::Read};
 
