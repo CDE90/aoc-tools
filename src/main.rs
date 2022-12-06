@@ -74,18 +74,20 @@ fn main() {
             let aoc_session = dotenv::var("AOC_SESSION");
             match aoc_session {
                 Ok(aoc_session) => {
-                    let input = Client::new()
-                        .get(&format!(
-                            "https://adventofcode.com/{}/day/{}/input",
-                            year, day
-                        ))
-                        .header("Cookie", format!("session={}", aoc_session))
-                        .send()
-                        .unwrap()
-                        .text()
-                        .unwrap();
+                    if !std::path::Path::new(&format!("{}/input.txt", day)).exists() {
+                        let input = Client::new()
+                            .get(&format!(
+                                "https://adventofcode.com/{}/day/{}/input",
+                                year, day
+                            ))
+                            .header("Cookie", format!("session={}", aoc_session))
+                            .send()
+                            .unwrap()
+                            .text()
+                            .unwrap();
 
-                    std::fs::write(format!("{}/input.txt", day), input.trim()).unwrap();
+                        std::fs::write(format!("{}/input.txt", day), input.trim()).unwrap();
+                    }
                 }
                 Err(e) => {
                     println!("AOC_SESSION not found in .env file: {}", e);
